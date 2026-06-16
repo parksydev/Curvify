@@ -1,0 +1,1022 @@
+/* GeoGebra-inspired professional theme */
+:root {
+  --gg-bg: #f5f5f5;
+  --gg-panel: #ffffff;
+  --gg-border: #d0d0d0;
+  --gg-border-light: #e8e8e8;
+  --gg-text: #333333;
+  --gg-text-muted: #666666;
+  --gg-menubar: #fafafa;
+  --gg-toolbar: #ececec;
+  --gg-toolbar-hover: #dde8f4;
+  --gg-active: #4a86c7;
+  --gg-active-bg: #e8f0fa;
+  --gg-accent: #2563eb;
+  --gg-function: #2563eb;
+  --gg-point: #e11d48;
+  --gg-grid-minor: #f0f0f0;
+  --gg-grid-major: #e0e0e0;
+  --gg-axis: #888888;
+  --gg-input-bg: #ffffff;
+  --gg-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --font-ui: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-math: "Cambria Math", "Times New Roman", serif;
+  --algebra-width: 260px;
+  --menubar-h: 28px;
+  --toolbar-h: 40px;
+  --inputbar-h: 36px;
+  --inputdock-pad-h: 168px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--gg-text);
+  background: var(--gg-bg);
+  touch-action: none;
+}
+
+.app {
+  display: grid;
+  grid-template-rows: var(--menubar-h) var(--toolbar-h) 1fr var(--inputbar-h);
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Menubar */
+.menubar {
+  display: flex;
+  align-items: stretch;
+  background: var(--gg-menubar);
+  border-bottom: 1px solid var(--gg-border);
+  padding: 0 4px;
+  user-select: none;
+  z-index: 100;
+}
+
+.menu {
+  position: relative;
+}
+
+.menu-trigger {
+  height: 100%;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--gg-text);
+  cursor: pointer;
+}
+
+.menu-trigger:hover,
+.menu.open .menu-trigger {
+  background: var(--gg-toolbar-hover);
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  background: var(--gg-panel);
+  border: 1px solid var(--gg-border);
+  box-shadow: var(--gg-shadow), 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 200;
+  padding: 4px 0;
+}
+
+.menu-dropdown button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--gg-text);
+}
+
+.menu-dropdown button:hover {
+  background: var(--gg-toolbar-hover);
+}
+
+.menu-dropdown button span {
+  color: var(--gg-text-muted);
+  font-size: 11px;
+}
+
+.menu-dropdown hr {
+  border: none;
+  border-top: 1px solid var(--gg-border-light);
+  margin: 4px 0;
+}
+
+.menu-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.menu-check:hover {
+  background: var(--gg-toolbar-hover);
+}
+
+.menubar-title {
+  margin-left: auto;
+  padding: 0 12px;
+  font-size: 11px;
+  color: var(--gg-text-muted);
+  display: flex;
+  align-items: center;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--gg-toolbar);
+  border-bottom: 1px solid var(--gg-border);
+  user-select: none;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 2px;
+}
+
+.toolbar-sep {
+  width: 1px;
+  height: 28px;
+  background: var(--gg-border);
+  margin: 0 4px;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.toolbar-status {
+  font-size: 11px;
+  color: var(--gg-text-muted);
+  padding-right: 8px;
+}
+
+/* Coordinate mode switcher */
+.fit-method-group {
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.fit-method-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gg-text-muted);
+  white-space: nowrap;
+}
+
+.fit-method-select {
+  height: 28px;
+  min-width: 130px;
+  max-width: 160px;
+  padding: 0 8px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--gg-text);
+  cursor: pointer;
+  outline: none;
+}
+
+.fit-method-select:hover {
+  border-color: var(--gg-active);
+}
+
+.fit-method-select:focus {
+  border-color: var(--gg-active);
+  box-shadow: 0 0 0 1px var(--gg-active-bg);
+}
+
+.coord-mode-switch {
+  background: var(--gg-panel);
+  border: 1px solid var(--gg-border);
+  border-radius: 4px;
+  padding: 2px;
+  gap: 0;
+}
+
+.mode-btn {
+  padding: 4px 12px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gg-text-muted);
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.mode-btn:hover {
+  color: var(--gg-text);
+  background: var(--gg-toolbar-hover);
+}
+
+.mode-btn.active {
+  background: var(--gg-active-bg);
+  color: #1a4d7a;
+  box-shadow: inset 0 0 0 1px var(--gg-active);
+}
+
+.menu-mode {
+  display: block;
+  width: 100%;
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--gg-text);
+}
+
+.menu-mode:hover {
+  background: var(--gg-toolbar-hover);
+}
+
+.menu-mode.active {
+  background: var(--gg-active-bg);
+  font-weight: 600;
+  color: #1a4d7a;
+}
+
+.menu-mode.active::before {
+  content: '✓ ';
+}
+
+.coord-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 4;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gg-text-muted);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--gg-border-light);
+  border-radius: 4px;
+  box-shadow: var(--gg-shadow);
+  pointer-events: none;
+  user-select: none;
+}
+
+.coord-badge.polar {
+  color: #5b21b6;
+  border-color: #c4b5fd;
+  background: rgba(245, 243, 255, 0.95);
+}
+
+.graphics-panel.mode-polar {
+  background: #fefefe;
+}
+
+.graphics-panel.mode-polar #graphCanvas.tool-function {
+  cursor: crosshair;
+}
+
+#btnToolFunction .icon-polar {
+  width: 20px;
+  height: 20px;
+}
+
+.tool-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--gg-text);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.tool-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.tool-btn:hover {
+  background: var(--gg-toolbar-hover);
+  border-color: var(--gg-border-light);
+}
+
+.tool-btn.active {
+  background: var(--gg-active-bg);
+  border-color: var(--gg-active);
+  color: #1a4d7a;
+}
+
+.tool-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Workspace */
+.workspace {
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--gg-panel);
+}
+
+.algebra-panel {
+  width: var(--algebra-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--gg-border);
+  background: var(--gg-panel);
+  transition: width 0.2s, margin 0.2s;
+}
+
+.algebra-panel.collapsed {
+  width: 0;
+  overflow: hidden;
+  border-right: none;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--gg-toolbar);
+  border-bottom: 1px solid var(--gg-border);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.panel-close {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--gg-text-muted);
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.panel-close:hover {
+  background: var(--gg-border-light);
+  color: var(--gg-text);
+}
+
+.algebra-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.algebra-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  font-family: var(--font-math);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.algebra-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.algebra-item:hover .algebra-item-actions,
+.algebra-item.selected .algebra-item-actions {
+  opacity: 1;
+}
+
+.algebra-action {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--gg-text-muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.algebra-action:hover {
+  background: var(--gg-border-light);
+  border-color: var(--gg-border);
+  color: var(--gg-text);
+}
+
+.algebra-item:hover {
+  background: #f8f8f8;
+}
+
+.algebra-item.selected {
+  background: var(--gg-active-bg);
+  border-left-color: var(--gg-active);
+}
+
+.algebra-item.editing {
+  background: #eef4fc;
+  border-left-color: var(--gg-accent);
+}
+
+.algebra-item .obj-icon {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.algebra-item .obj-label {
+  flex: 1;
+  word-break: break-word;
+}
+
+.algebra-item .obj-sub {
+  font-size: 11px;
+  color: var(--gg-text-muted);
+  font-family: var(--font-ui);
+}
+
+.algebra-empty {
+  padding: 16px 12px;
+  font-size: 12px;
+  color: var(--gg-text-muted);
+  line-height: 1.5;
+}
+
+.algebra-list:not(:empty) + .algebra-empty {
+  display: none;
+}
+
+.graphics-panel {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  background: #fff;
+}
+
+#graphCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: default;
+}
+
+#graphCanvas.tool-function {
+  cursor: crosshair;
+}
+
+#graphCanvas.tool-point {
+  cursor: cell;
+}
+
+#graphCanvas.tool-move {
+  cursor: grab;
+}
+
+#graphCanvas.tool-move.panning {
+  cursor: grabbing;
+}
+
+.algebra-toggle {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 48px;
+  border: 1px solid var(--gg-border);
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  background: var(--gg-toolbar);
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--gg-text-muted);
+  z-index: 5;
+}
+
+.algebra-toggle:hover {
+  background: var(--gg-toolbar-hover);
+  color: var(--gg-text);
+}
+
+/* Input dock (GeoGebra-style) */
+.input-dock {
+  display: flex;
+  flex-direction: column;
+  background: var(--gg-toolbar);
+  border-top: 1px solid var(--gg-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+  z-index: 20;
+}
+
+.input-main-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  min-height: var(--inputbar-h);
+}
+
+.input-type-select {
+  height: 28px;
+  min-width: 108px;
+  padding: 0 6px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gg-text);
+  cursor: pointer;
+}
+
+.input-structured {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  background: var(--gg-input-bg);
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.input-structured:focus-within {
+  border-color: var(--gg-active);
+  box-shadow: 0 0 0 1px var(--gg-active-bg);
+}
+
+.input-name {
+  width: 36px;
+  flex-shrink: 0;
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  border-right: 1px solid var(--gg-border-light);
+  background: #f8f9fa;
+  font-family: var(--font-math);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+}
+
+.input-prefix {
+  flex-shrink: 0;
+  padding: 0 4px;
+  font-family: var(--font-math);
+  font-size: 14px;
+  color: var(--gg-text);
+  user-select: none;
+  min-width: 28px;
+}
+
+.input-prefix .katex {
+  font-size: 1.05em;
+}
+
+.command-input {
+  flex: 1;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-math);
+  font-size: 14px;
+  outline: none;
+}
+
+.btn-input-submit {
+  height: 28px;
+  padding: 0 14px;
+  border: 1px solid #1d5a9e;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #5a9fd4 0%, var(--gg-active) 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-input-submit:hover {
+  background: linear-gradient(180deg, #6aafe4 0%, #3d76b7 100%);
+}
+
+.btn-input-cancel {
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  color: var(--gg-text);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-input-cancel:hover {
+  background: #f0f0f0;
+  border-color: #bbb;
+}
+
+.input-dock.input-editing .input-structured {
+  border-color: var(--gg-active);
+  box-shadow: 0 0 0 1px var(--gg-active-bg);
+}
+
+.btn-pad-toggle {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--gg-text-muted);
+}
+
+.btn-pad-toggle:hover,
+.btn-pad-toggle[aria-expanded="true"] {
+  background: var(--gg-active-bg);
+  border-color: var(--gg-active);
+  color: var(--gg-active);
+}
+
+.input-help {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--gg-border);
+  border-radius: 50%;
+  background: var(--gg-panel);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gg-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.input-help:hover {
+  background: var(--gg-toolbar-hover);
+  color: var(--gg-active);
+}
+
+.input-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 12px 6px;
+  min-height: 22px;
+}
+
+.input-preview-icon {
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gg-text-muted);
+}
+
+.input-preview-icon.ok { color: #059669; }
+.input-preview-icon.err { color: #dc2626; }
+
+.input-preview {
+  flex: 1;
+  font-family: var(--font-math);
+  font-size: 12px;
+  color: var(--gg-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-preview.ok { color: #1e40af; }
+.input-preview.err { color: #b91c1c; }
+
+.katex-preview {
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 1.4em;
+}
+
+.katex-preview .katex {
+  font-size: 1.15em;
+}
+
+.obj-latex {
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+.obj-latex .katex {
+  font-size: 1.05em;
+}
+
+.input-pad {
+  border-top: 1px solid var(--gg-border-light);
+  background: #f0f0f0;
+  padding: 6px 8px 8px;
+}
+
+.input-dock:not(.pad-open) .input-pad {
+  display: none;
+}
+
+.input-pad-toolbar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+  align-items: center;
+}
+
+.input-template-select {
+  flex: 1;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  font-size: 11px;
+}
+
+.pad-tool-btn {
+  min-width: 28px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--gg-text);
+}
+
+.pad-tool-btn:hover {
+  background: var(--gg-toolbar-hover);
+}
+
+.input-pad-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.pad-key {
+  height: 30px;
+  border: 1px solid var(--gg-border);
+  border-radius: 3px;
+  background: var(--gg-panel);
+  font-family: var(--font-math);
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--gg-text);
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.pad-key:hover {
+  background: var(--gg-active-bg);
+  border-color: var(--gg-active);
+}
+
+.pad-key.pad-var {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.pad-key:active {
+  transform: scale(0.97);
+}
+
+.syntax-dialog {
+  max-width: 520px;
+}
+
+.syntax-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.syntax-grid h3 {
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--gg-text);
+}
+
+.syntax-grid table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+
+.syntax-grid th {
+  text-align: left;
+  padding: 4px 8px 4px 0;
+  color: var(--gg-text-muted);
+  font-weight: 600;
+  width: 72px;
+  vertical-align: top;
+}
+
+.syntax-grid td {
+  padding: 4px 0;
+  font-family: var(--font-math);
+}
+
+.syntax-grid p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Toast — status-style notifications */
+.toast-container {
+  position: fixed;
+  bottom: calc(var(--inputbar-h) + var(--inputdock-pad-h) + 16px);
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 220px;
+  max-width: 340px;
+  padding: 8px 12px 8px 10px;
+  background: var(--gg-panel);
+  color: var(--gg-text);
+  border: 1px solid var(--gg-border);
+  border-left: 3px solid var(--toast-accent, var(--gg-accent));
+  border-radius: 3px;
+  box-shadow: var(--gg-shadow);
+  font-size: 12px;
+  line-height: 1.45;
+  animation: toastIn 0.18s ease-out forwards, toastOut 0.2s ease-in 3.2s forwards;
+}
+
+.toast.info { --toast-accent: var(--gg-accent); }
+.toast.warning { --toast-accent: #b45309; }
+.toast.error { --toast-accent: #b91c1c; }
+
+.toast-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--toast-accent, var(--gg-accent));
+}
+
+.toast-message {
+  color: var(--gg-text);
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Dialog */
+.app-dialog {
+  border: 1px solid var(--gg-border);
+  border-radius: 6px;
+  padding: 20px 24px;
+  max-width: 420px;
+  font-family: var(--font-ui);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.app-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.app-dialog h2 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.app-dialog ul {
+  margin: 0 0 16px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.app-dialog code {
+  background: #f0f0f0;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 12px;
+}
+
+.btn-primary {
+  padding: 6px 16px;
+  background: var(--gg-accent);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.input-dock:not(.pad-open) ~ .toast-container,
+body:has(.input-dock:not(.pad-open)) .toast-container {
+  bottom: calc(var(--inputbar-h) + 48px);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --algebra-width: 200px;
+  }
+
+  .menubar-title {
+    display: none;
+  }
+
+  .input-type-select {
+    min-width: 88px;
+    font-size: 10px;
+  }
+
+  .input-pad-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .pad-key {
+    font-size: 11px;
+    padding: 0;
+  }
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curvify — Classic</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+</head>
+<body>
+  <div id="app" class="app">
+  <header class="menubar" role="menubar">
+    <nav class="menu" data-menu="file">
+      <button type="button" class="menu-trigger" aria-haspopup="true">파일</button>
+      <div class="menu-dropdown" hidden>
+        <button type="button" data-action="new">새 문서 <span>Ctrl+N</span></button>
+        <button type="button" data-action="export-png">그래프 PNG보내기</button>
+      </div>
+    </nav>
+    <nav class="menu" data-menu="edit">
+      <button type="button" class="menu-trigger" aria-haspopup="true">편집</button>
+      <div class="menu-dropdown" hidden>
+        <button type="button" data-action="undo">실행 취소 <span>Ctrl+Z</span></button>
+        <button type="button" data-action="redo">다시 실행 <span>Ctrl+Y</span></button>
+        <hr>
+        <button type="button" data-action="delete">삭제 <span>Del</span></button>
+        <button type="button" data-action="edit-object">수정…</button>
+        <hr>
+        <button type="button" data-action="clear-input-functions">입력 함수 초기화</button>
+      </div>
+    </nav>
+    <nav class="menu" data-menu="view">
+      <button type="button" class="menu-trigger" aria-haspopup="true">보기</button>
+      <div class="menu-dropdown" hidden>
+        <button type="button" data-coord="cartesian" class="menu-mode active">직교좌표 (x, y)</button>
+        <button type="button" data-coord="polar" class="menu-mode">극좌표 (r, θ)</button>
+        <hr>
+        <label class="menu-check"><input type="checkbox" id="chkGrid" checked> 격자 표시</label>
+        <label class="menu-check"><input type="checkbox" id="chkAxes" checked> 축 표시</label>
+        <label class="menu-check"><input type="checkbox" id="chkAlgebra" checked> 대수 보기</label>
+        <hr>
+        <button type="button" data-action="zoom-in">확대</button>
+        <button type="button" data-action="zoom-out">축소</button>
+        <button type="button" data-action="zoom-fit">화면 맞춤</button>
+      </div>
+    </nav>
+    <nav class="menu" data-menu="tools">
+      <button type="button" class="menu-trigger" aria-haspopup="true">도구</button>
+      <div class="menu-dropdown" hidden>
+        <button type="button" data-tool="move">이동</button>
+        <button type="button" data-tool="function">함수 / 극곡선 그리기</button>
+        <button type="button" data-tool="point">점</button>
+        <button type="button" data-tool="input">입력 도구</button>
+      </div>
+    </nav>
+    <nav class="menu" data-menu="help">
+      <button type="button" class="menu-trigger" aria-haspopup="true">도움말</button>
+      <div class="menu-dropdown" hidden>
+        <button type="button" data-action="help">사용법</button>
+        <button type="button" data-action="about">정보</button>
+      </div>
+    </nav>
+    <div class="menubar-title">Curvify Classic</div>
+  </header>
+
+  <div class="toolbar" role="toolbar" aria-label="도구 모음">
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn active" data-tool="move" title="이동 (M)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 6l-3-3-5 5 3 3 2-2v9h2V6l2 2 3-3-5-5-3 3z"/></svg>
+      </button>
+      <button type="button" class="tool-btn" data-tool="function" id="btnToolFunction" title="함수 그리기 (F)">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-cartesian"><path d="M3 17c3-6 6-10 9-12 2 4 5 8 9 11-4-2-7-4-9-6-2 3-5 6-9 7z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-polar" hidden><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 12 L20 12 A8 8 0 0 1 12 20 Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+      <button type="button" class="tool-btn" data-tool="point" title="점 (P)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+      </button>
+      <button type="button" class="tool-btn" data-tool="input" title="입력 (I)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v2H4V6zm0 5h10v2H4v-2zm0 5h14v2H4v-2z"/></svg>
+      </button>
+    </div>
+    <div class="toolbar-sep"></div>
+    <div class="toolbar-group coord-mode-switch" role="group" aria-label="좌표계">
+      <button type="button" class="mode-btn active" data-coord="cartesian" title="직교좌표 (1)">직교</button>
+      <button type="button" class="mode-btn" data-coord="polar" title="극좌표 (2)">극좌표</button>
+    </div>
+    <div class="toolbar-sep"></div>
+    <div class="toolbar-group fit-method-group">
+      <label for="fitMethodSelect" class="fit-method-label">근사</label>
+      <select id="fitMethodSelect" class="fit-method-select" title="스케치 곡선 근사 방법"></select>
+    </div>
+    <div class="toolbar-sep"></div>
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn icon-only" data-action="undo" title="실행 취소">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.5 8c-2.65 0-5.05 1.16-6.7 3l-2.3-2.3v7.3H10l-2.4-2.4c1.17-1.15 2.76-1.86 4.9-1.86 3.31 0 6 2.69 6 6s-2.69 6-6 6H8v2h4.5c4.14 0 7.5-3.36 7.5-7.5S16.64 8 12.5 8z"/></svg>
+      </button>
+      <button type="button" class="tool-btn icon-only" data-action="redo" title="다시 실행">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5 8c2.65 0 5.05 1.16 6.7 3l2.3-2.3v7.3H14l2.4-2.4c-1.17-1.15-2.76-1.86-4.9-1.86-3.31 0-6 2.69-6 6s2.69 6 6 6h4.5v2H11.5c-4.14 0-7.5-3.36-7.5-7.5S7.36 8 11.5 8z"/></svg>
+      </button>
+    </div>
+    <div class="toolbar-sep"></div>
+    <div class="toolbar-group">
+      <button type="button" class="tool-btn icon-only" data-action="zoom-in" title="확대">+</button>
+      <button type="button" class="tool-btn icon-only" data-action="zoom-out" title="축소">−</button>
+      <button type="button" class="tool-btn icon-only" data-action="zoom-fit" title="맞춤">⊡</button>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <div class="toolbar-status" id="toolStatus">이동</div>
+  </div>
+
+  <div class="workspace">
+    <aside id="algebraPanel" class="algebra-panel" aria-label="대수 보기">
+      <div class="panel-header">
+        <span class="panel-title">대수</span>
+        <button type="button" class="panel-close" id="btnCloseAlgebra" title="패널 닫기" aria-label="대수 패널 닫기">×</button>
+      </div>
+      <div class="algebra-list" id="algebraList" role="list"></div>
+      <div class="algebra-empty" id="algebraEmpty">객체가 없습니다. 함수를 그리거나 입력창에 식을 입력하세요.</div>
+    </aside>
+
+    <main class="graphics-panel" id="graphicsPanel">
+      <div class="coord-badge" id="coordBadge">직교좌표</div>
+      <canvas id="graphCanvas" aria-label="그래프 보기"></canvas>
+      <button type="button" class="algebra-toggle" id="btnShowAlgebra" title="대수 보기" hidden>›</button>
+    </main>
+  </div>
+
+  <footer id="inputDock" class="input-dock pad-open" aria-label="명령 입력">
+    <div class="input-main-row">
+      <select id="inputTypeSelect" class="input-type-select" title="입력 유형"></select>
+      <div class="input-structured">
+        <input type="text" id="inputName" class="input-name" maxlength="3" title="이름 (f, A, r…)" aria-label="객체 이름">
+        <span id="inputPrefix" class="input-prefix">=</span>
+        <input type="text" id="commandInput" class="command-input" placeholder="x^{2} + \frac{1}{2}\sin(x)" autocomplete="off" spellcheck="false" aria-label="LaTeX 수식">
+      </div>
+      <button type="button" id="btnInputSubmit" class="btn-input-submit" title="입력 실행 (Enter)">입력</button>
+      <button type="button" id="btnInputCancel" class="btn-input-cancel" hidden title="편집 취소 (Esc)">취소</button>
+      <button type="button" id="btnPadToggle" class="btn-pad-toggle" aria-expanded="true" title="입력 패드">⌨</button>
+      <button type="button" class="input-help" id="btnInputSyntax" title="문법 안내">?</button>
+    </div>
+    <div class="input-preview-row">
+      <span id="inputPreviewIcon" class="input-preview-icon">○</span>
+      <span id="inputPreview" class="input-preview katex-preview">LaTeX 수식을 입력하면 미리보기가 표시됩니다.</span>
+    </div>
+    <div id="inputPad" class="input-pad">
+      <div class="input-pad-toolbar">
+        <select id="inputTemplateSelect" class="input-template-select" title="템플릿"></select>
+        <button type="button" id="btnInputHistoryPrev" class="pad-tool-btn" title="이전 입력 (Ctrl+↑)">↑</button>
+        <button type="button" id="btnInputHistoryNext" class="pad-tool-btn" title="다음 입력 (Ctrl+↓)">↓</button>
+        <button type="button" id="btnInputClear" class="pad-tool-btn" title="식 지우기">C</button>
+      </div>
+      <div id="inputPadGrid" class="input-pad-grid" role="group" aria-label="기호 패드"></div>
+    </div>
+  </footer>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <dialog id="helpDialog" class="app-dialog">
+    <h2>사용법</h2>
+    <ul>
+      <li><strong>좌표계</strong>: 툴바에서 <em>직교</em> / <em>극좌표</em> 전환 (단축키 1, 2)</li>
+      <li><strong>직교 — 함수 그리기</strong>: x 방향으로 한 번에 스케치. <code>f(x)=x^2</code>, <code>A=(3,4)</code></li>
+      <li><strong>극좌표 — 극곡선</strong>: θ가 한 방향으로 증가하도록 스케치. <code>r=1+cos(θ)</code>, <code>A=(2; 60°)</code></li>
+      <li><strong>근사 방법</strong>: 툴바에서 다항식, sin/cos 조합, 지수, 거듭제곱, 로그, 일차, 자동(최적) 중 선택. 스케치 완료 시 적용되며, 변경 시 기존 스케치를 다시 근사합니다.</li>
+      <li><strong>이동</strong>: 드래그로 팬, 휠로 확대/축소 (커서 기준)</li>
+      <li><strong>LaTeX 입력</strong>: 유형·이름 선택 후 LaTeX 수식 입력. 미리보기는 KaTeX로 렌더링. Enter 또는 [입력] 실행.</li>
+      <li><strong>단축키</strong>: M 이동, F 그리기, P 점, I 입력 포커스, Ctrl+Z/Y, Ctrl+↑/↓ 입력 기록</li>
+    </ul>
+    <form method="dialog"><button type="submit" class="btn-primary">닫기</button></form>
+  </dialog>
+
+  <dialog id="syntaxDialog" class="app-dialog syntax-dialog">
+    <h2>LaTeX 입력 문법</h2>
+    <div class="syntax-grid">
+      <section>
+        <h3>직교좌표</h3>
+        <table>
+          <tr><th>함수</th><td><code>x^{2} + 1</code> (이름란 f → <code>f(x)=…</code>)</td></tr>
+          <tr><th>점</th><td><code>(3, 4)</code> 또는 <code>(1.5,\, 2.5)</code></td></tr>
+        </table>
+      </section>
+      <section>
+        <h3>극좌표</h3>
+        <table>
+          <tr><th>극함수</th><td><code>1 + \cos(\theta)</code></td></tr>
+          <tr><th>점</th><td><code>(2;\, 45^{\circ})</code>, <code>(1;\, \pi/4)</code></td></tr>
+        </table>
+      </section>
+      <section>
+        <h3>LaTeX 기호</h3>
+        <p><code>\frac{a}{b}</code> <code>x^{n}</code> <code>\sqrt{x}</code> <code>\sin \cos \tan</code></p>
+        <p><code>\ln \log</code> <code>\pi</code> <code>\theta</code> <code>\cdot</code> <code>\left( \right)</code></p>
+        <p>패드·템플릿으로 삽입 가능. 실수: <code>2.5</code>, <code>1.5\times 10^{-3}</code></p>
+      </section>
+    </div>
+    <form method="dialog"><button type="submit" class="btn-primary">닫기</button></form>
+  </dialog>
+
+  <dialog id="aboutDialog" class="app-dialog">
+    <h2>Curvify Classic</h2>
+    <p>직교·극좌표 워크스페이스. 손그림 곡선을 수식으로 근사하고, 입력창으로 함수·극방정식·점을 정의합니다.</p>
+    <form method="dialog"><button type="submit" class="btn-primary">닫기</button></form>
+  </dialog>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script src="js/coords.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="js/fit-curve.js"></script>
+  <script src="js/latex.js"></script>
+  <script src="js/fit-models.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/input-panel.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/sketch.js"></script>
+  <script src="js/polar-sketch.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
