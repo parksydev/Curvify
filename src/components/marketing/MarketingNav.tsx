@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { performLogout } from '@/lib/auth/logout';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const NAV_LINKS = [
   { href: '/#features', label: 'Features' },
   { href: '/#how-it-works', label: 'How it works' },
+  { href: '/tech', label: 'Technology' },
   { href: '/pricing', label: 'Pricing' },
 ];
 
@@ -15,13 +17,6 @@ export default function MarketingNav() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const initialized = useAuthStore((s) => s.initialized);
-  const logout = useAuthStore((s) => s.logout);
-
-  async function handleLogout() {
-    await logout();
-    router.push('/');
-    router.refresh();
-  }
 
   return (
     <header className="mkt-nav">
@@ -46,7 +41,9 @@ export default function MarketingNav() {
         </nav>
 
         <div className="mkt-nav-actions">
-          {initialized && user ? (
+          {!initialized ? (
+            <span className="mkt-nav-skeleton" aria-hidden />
+          ) : user ? (
             <>
               <Link href="/app" className="mkt-btn mkt-btn-primary mkt-btn-sm">
                 Workspace
@@ -54,7 +51,11 @@ export default function MarketingNav() {
               <Link href="/app/account" className="mkt-nav-user" title={user.email}>
                 {user.name}
               </Link>
-              <button type="button" className="mkt-btn mkt-btn-ghost mkt-btn-sm" onClick={() => void handleLogout()}>
+              <button
+                type="button"
+                className="mkt-btn mkt-btn-ghost mkt-btn-sm"
+                onClick={() => void performLogout(router, '/')}
+              >
                 Log out
               </button>
             </>

@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { getSafeRedirect } from '@/lib/auth/redirect';
 import type { Database } from './database.types';
 
 export async function updateSession(request: NextRequest) {
@@ -38,8 +39,9 @@ export async function updateSession(request: NextRequest) {
   }
 
   if ((path === '/login' || path === '/signup') && user) {
+    const redirect = getSafeRedirect(request.nextUrl.searchParams.get('redirect'));
     const url = request.nextUrl.clone();
-    url.pathname = '/app';
+    url.pathname = redirect;
     url.search = '';
     return NextResponse.redirect(url);
   }

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import MarketingNav from '@/components/marketing/MarketingNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
+import WorkspacePreview from '@/components/marketing/WorkspacePreview';
 import './marketing.css';
 
 const FEATURES = [
@@ -48,27 +49,21 @@ export default function LandingPage() {
       <MarketingNav />
 
       <section className="mkt-hero">
-        <div className="mkt-hero-bg" aria-hidden>
-          <div className="mkt-hero-orb mkt-hero-orb-1" />
-          <div className="mkt-hero-orb mkt-hero-orb-2" />
-          <div className="mkt-hero-grid" />
-        </div>
-
         <div className="mkt-hero-inner">
           <div className="mkt-hero-copy">
             <div className="mkt-hero-badge">
               <span className="mkt-hero-badge-dot" />
-              Now in public beta — free to start
+              Public beta — free to start
             </div>
 
             <h1>
               Turn hand-drawn curves into{' '}
-              <span className="gradient-text">living equations</span>
+              <span className="accent-text">living equations</span>
             </h1>
 
             <p className="mkt-hero-lead">
               Curvify is the graph workspace for people who think with their hands. Sketch a curve,
-              get a fitted function, analyze it — all in one beautiful canvas.
+              get a fitted function, analyze it — all in one canvas.
             </p>
 
             <div className="mkt-hero-cta">
@@ -97,40 +92,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mkt-hero-visual">
-            <div className="mkt-float-card mkt-float-card-1">R² = 0.998</div>
-            <div className="mkt-float-card mkt-float-card-2">Fit: polynomial</div>
-
-            <div className="mkt-demo-window">
-              <div className="mkt-demo-titlebar">
-                <span className="mkt-demo-dot red" />
-                <span className="mkt-demo-dot yellow" />
-                <span className="mkt-demo-dot green" />
-                <span>Curvify — Figure 1</span>
-              </div>
-              <div className="mkt-demo-canvas">
-                <div className="mkt-demo-grid-lines" />
-                <div className="mkt-demo-curve">
-                  <svg viewBox="0 0 400 200" preserveAspectRatio="none">
-                    <path
-                      d="M 20 160 Q 80 180 120 120 T 200 80 T 280 100 T 380 40"
-                      fill="none"
-                      stroke="#6366f1"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M 20 158 Q 82 178 122 118 T 202 78 T 282 98 T 378 38"
-                      fill="none"
-                      stroke="#ec4899"
-                      strokeWidth="2"
-                      strokeDasharray="6 4"
-                      opacity="0.7"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="mkt-demo-equation">f(x) ≈ 0.12x³ − 1.4x² + 4.2x + 1.8</div>
-            </div>
+            <WorkspacePreview />
           </div>
         </div>
       </section>

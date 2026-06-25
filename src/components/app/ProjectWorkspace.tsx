@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import AuthLoadingScreen from '@/components/auth/AuthLoadingScreen';
 import Workbench from '@/components/Workbench';
 import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -132,7 +133,11 @@ export function ProjectWorkspace() {
   const user = useAuthStore((s) => s.user);
   const bootstrapped = useCloudProjectStore((s) => s.bootstrapped);
   const syncStatus = useCloudProjectStore((s) => s.syncStatus);
+  const errorMessage = useCloudProjectStore((s) => s.errorMessage);
+  const projects = useCloudProjectStore((s) => s.projects);
+  const currentProjectId = useCloudProjectStore((s) => s.currentProjectId);
   const bootstrap = useCloudProjectStore((s) => s.bootstrap);
+  const resetBootstrap = useCloudProjectStore((s) => s.resetBootstrap);
   const markDirty = useCloudProjectStore((s) => s.markDirty);
   const saveCurrent = useCloudProjectStore((s) => s.saveCurrent);
   const isDirty = useCloudProjectStore((s) => s.isDirty);
@@ -170,12 +175,62 @@ export function ProjectWorkspace() {
     };
   }, [isDirty, user, scheduleAutoSave]);
 
-  if (!initialized || (user && !bootstrapped) || syncStatus === 'loading') {
+  const handleRetryBootstrap = () => {
+    resetBootstrap();
+    void bootstrap();
+  };
+
+  if (!initialized || (user && !bootstrapped)) {
+    return (
+      <AuthLoadingScreen
+        message="워크스페이스 불러오는 중…"
+        submessage="클라우드 프로젝트를 준비합니다."
+      />
+    );
+  }
+
+  if (user && syncStatus === 'loading') {
+    return (
+      <AuthLoadingScreen
+        message="프로젝트 불러오는 중…"
+        submessage="저장된 그래프를 복원합니다."
+      />
+    );
+  }
+
+  if (
+    user &&
+    syncStatus === 'error' &&
+    errorMessage &&
+    projects.length === 0 &&
+    !currentProjectId
+  ) {
     return (
       <div className="auth-loading">
-        <div className="auth-loading-inner">
-          <div className="auth-spinner" />
-          <span>Loading your workspace…</span>
+        <div className="workspace-error-card">
+          <h2>워크스페이스를 불러오지 못했습니다</h2>
+          <p>{errorMessage}</p>
+          <div className="workspace-error-actions">
+            <button type="button" className="btn-primary" onClick={handleRetryBootstrap}>
+              다시 시도
+            </button>
+            <button
+              type="button"
+              className="btn-input-cancel"
+              onClick={() => {
+                resetBootstrap();
+                useAppStore.getState().newDocument();
+                useCloudProjectStore.setState({
+                  bootstrapped: true,
+                  syncStatus: 'saved',
+                  errorMessage: null,
+                  isDirty: false,
+                });
+              }}
+            >
+              빈 문서로 시작
+            </button>
+          </div>
         </div>
       </div>
     );

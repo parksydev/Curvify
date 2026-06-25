@@ -9,6 +9,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { useRouter } from 'next/navigation';
+import { performLogout } from '@/lib/auth/logout';
 import AnalysisPanel from '@/components/AnalysisPanel';
 import GraphCanvas from '@/components/GraphCanvas';
 import PropertiesPanel from '@/components/PropertiesPanel';
@@ -222,7 +223,6 @@ function DataImportDialog({
 export default function Workbench() {
   const router = useRouter();
   const authUser = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
   const projectTitle = useCloudProjectStore((s) => s.currentProjectTitle);
   const syncStatus = useCloudProjectStore((s) => s.syncStatus);
   const isDirty = useCloudProjectStore((s) => s.isDirty);
@@ -1352,7 +1352,7 @@ export default function Workbench() {
             className="btn-input-cancel"
             onClick={() => {
               aboutRef.current?.close();
-              void logout().then(() => router.push('/'));
+              void performLogout(router, '/');
             }}
           >
             Log out

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { formatTheta } from '@/lib/coords';
 import { useAppStore } from '@/store/useAppStore';
 import { useCloudProjectStore } from '@/store/useCloudProjectStore';
@@ -26,6 +25,7 @@ export default function StatusBar() {
   const syncStatus = useCloudProjectStore((s) => s.syncStatus);
   const isDirty = useCloudProjectStore((s) => s.isDirty);
   const projectTitle = useCloudProjectStore((s) => s.currentProjectTitle);
+  const setPickerOpen = useCloudProjectStore((s) => s.setPickerOpen);
 
   const selected = objects.find((o) => o.id === selectedId);
   const visibleCount = objects.filter((o) => o.visible !== false).length;
@@ -60,9 +60,14 @@ export default function StatusBar() {
       </div>
       <div className="status-section">
         <span className="status-label">프로젝트</span>
-        <Link href="/app/account" className="status-value status-cloud" title={projectTitle}>
+        <button
+          type="button"
+          className="status-value status-cloud status-cloud-btn"
+          title={`${projectTitle} — 프로젝트 목록 열기`}
+          onClick={() => setPickerOpen(true)}
+        >
           {projectTitle}
-        </Link>
+        </button>
         <span className={`status-cloud-badge${syncStatus === 'error' ? ' err' : isDirty ? ' dirty' : ''}`}>
           {cloudLabel}
         </span>

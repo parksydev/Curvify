@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import type { User } from '@supabase/supabase-js';
+import { getSafeRedirect } from '@/lib/auth/redirect';
 import { createClient } from '@/lib/supabase/client';
 import { mapAuthError } from '@/lib/supabase/auth-errors';
 import type { Profile, UserPlan } from '@/lib/supabase/database.types';
@@ -25,7 +26,7 @@ interface AuthStore {
   initialized: boolean;
   initialize: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<AuthResult>;
+  signup: (name: string, email: string, password: string, plan?: UserPlan) => Promise<AuthResult>;
   login: (email: string, password: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
   updateProfile: (patch: { fullName?: string }) => Promise<{ ok: true } | { ok: false; error: string }>;
@@ -55,49 +56,53 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   initialized: false,
 
   initialize: async () => {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      set({ user: null, sessionUser: null, profile: null, initialized: true });
-      return;
-    }
-
     try {
-      let profile = await fetchProfile(user.id);
-      if (!profile) {
-        const { data } = await supabase
-          .from('profiles')
-          .upsert({
-            id: user.id,
-            full_name: (user.user_metadata?.full_name as string) || user.email?.split('@')[0] || '',
-          })
-          .select('*')
-          .single();
-        profile = data;
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        set({ user: null, sessionUser: null, profile: null, initialized: true });
+        return;
       }
 
-      set({
-        sessionUser: user,
-        profile,
-        user: profile ? profileToAuthUser(profile, user.email ?? '') : null,
-        initialized: true,
-      });
+      try {
+        let profile = await fetchProfile(user.id);
+        if (!profile) {
+          const { data } = await supabase
+            .from('profiles')
+            .upsert({
+              id: user.id,
+              full_name: (user.user_metadata?.full_name as string) || user.email?.split('@')[0] || '',
+            })
+            .select('*')
+            .single();
+          profile = data;
+        }
+
+        set({
+          sessionUser: user,
+          profile,
+          user: profile ? profileToAuthUser(profile, user.email ?? '') : null,
+          initialized: true,
+        });
+      } catch {
+        set({
+          sessionUser: user,
+          profile: null,
+          user: {
+            id: user.id,
+            name: (user.user_metadata?.full_name as string) || user.email?.split('@')[0] || 'User',
+            email: user.email ?? '',
+            plan: 'free',
+            createdAt: user.created_at,
+          },
+          initialized: true,
+        });
+      }
     } catch {
-      set({
-        sessionUser: user,
-        profile: null,
-        user: {
-          id: user.id,
-          name: (user.user_metadata?.full_name as string) || user.email?.split('@')[0] || 'User',
-          email: user.email ?? '',
-          plan: 'free',
-          createdAt: user.created_at,
-        },
-        initialized: true,
-      });
+      set({ user: null, sessionUser: null, profile: null, initialized: true });
     }
   },
 
@@ -113,7 +118,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
 
-  signup: async (name, email, password) => {
+  signup: async (name, email, password, plan) => {
     const trimmedEmail = email.trim().toLowerCase();
     const trimmedName = name.trim();
 
@@ -124,20 +129,42 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       return { ok: false, error: 'Password must be at least 6 characters.' };
     }
 
+    const signupPlan = plan === 'pro' || plan === 'team' ? plan : undefined;
+    const redirectPath = getSafeRedirect(
+      typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('redirect')
+        : null,
+    );
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+
     const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({
       email: trimmedEmail,
       password,
       options: {
-        data: { full_name: trimmedName },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/app`,
+        data: {
+          full_name: trimmedName,
+          ...(signupPlan ? { requested_plan: signupPlan } : {}),
+        },
+        emailRedirectTo: callbackUrl,
       },
     });
 
     if (error) return { ok: false, error: mapAuthError(error.message) };
 
     if (data.session && data.user) {
-      const profile = await fetchProfile(data.user.id);
+      let profile = await fetchProfile(data.user.id);
+
+      if (signupPlan === 'pro' && profile) {
+        const { data: updated } = await supabase
+          .from('profiles')
+          .update({ plan: 'pro' })
+          .eq('id', data.user.id)
+          .select('*')
+          .single();
+        if (updated) profile = updated;
+      }
+
       set({
         sessionUser: data.user,
         profile,
@@ -147,7 +174,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
               id: data.user.id,
               name: trimmedName,
               email: trimmedEmail,
-              plan: 'free',
+              plan: signupPlan === 'pro' ? 'pro' : 'free',
               createdAt: data.user.created_at,
             },
       });

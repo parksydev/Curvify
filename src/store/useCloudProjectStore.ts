@@ -44,6 +44,7 @@ interface CloudProjectStore {
   setPickerOpen: (open: boolean) => void;
   markDirty: () => void;
   bootstrap: () => Promise<void>;
+  resetBootstrap: () => void;
   refreshProjectList: () => Promise<void>;
   saveCurrent: () => Promise<void>;
   loadProjectById: (id: string) => Promise<void>;
@@ -68,6 +69,18 @@ export const useCloudProjectStore = create<CloudProjectStore>((set, get) => ({
 
   markDirty: () => {
     if (!get().isDirty) set({ isDirty: true, syncStatus: 'idle' });
+  },
+
+  resetBootstrap: () => {
+    set({
+      bootstrapped: false,
+      syncStatus: 'idle',
+      errorMessage: null,
+      projects: [],
+      currentProjectId: null,
+      currentProjectTitle: 'Untitled',
+      isDirty: false,
+    });
   },
 
   bootstrap: async () => {

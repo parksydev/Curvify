@@ -144,7 +144,7 @@ export default function Ribbon({
           )}
           {syncLabel && <span className="ribbon-sync-badge">{syncLabel}</span>}
           {userName && (
-            <a href="/app/account" className="ribbon-user-link" title="Account">
+            <a href="/app/account" className="ribbon-user-link" title={`${userName} — 계정 설정`}>
               {userName}
             </a>
           )}

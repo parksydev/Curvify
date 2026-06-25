@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Source_Sans_3 } from 'next/font/google';
 import AuthProvider from '@/components/providers/AuthProvider';
 import './globals.css';
+import '@/styles/brand.css';
 import 'katex/dist/katex.min.css';
 
 const sourceSans = Source_Sans_3({

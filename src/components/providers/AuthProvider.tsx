@@ -15,9 +15,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const supabase = createClient();
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // Defer auth API calls — awaiting them inside this callback can deadlock getUser().
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        await initialize();
+        setTimeout(() => void initialize(), 0);
       }
       if (event === 'SIGNED_OUT') {
         useAuthStore.setState({
@@ -34,7 +35,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         });
       }
       if (event === 'USER_UPDATED' && session?.user) {
-        await refreshProfile();
+        setTimeout(() => void refreshProfile(), 0);
       }
     });
 

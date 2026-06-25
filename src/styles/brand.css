@@ -1,0 +1,22 @@
+/* Shared Curvify brand tokens — bridges marketing/auth and workspace IDE */
+:root {
+  --brand-bg: #e8e8e8;
+  --brand-panel: #ffffff;
+  --brand-border: #b8b8b8;
+  --brand-border-light: #d4d4d4;
+  --brand-text: #212121;
+  --brand-text-muted: #5a5a5a;
+  --brand-accent: #0072bd;
+  --brand-accent-dark: #005a94;
+  --brand-accent-light: #d6e8f5;
+  --brand-accent-hover: #e8f2fa;
+  --brand-toolbar: #f6f6f6;
+  --brand-menubar: #f0f0f0;
+  --brand-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --brand-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.14);
+  --brand-radius: 4px;
+  --brand-radius-lg: 6px;
+  --brand-font: "Segoe UI", "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  --brand-grid-minor: #f0f0f0;
+  --brand-grid-major: #e0e0e0;
+}

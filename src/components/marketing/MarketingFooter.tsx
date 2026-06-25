@@ -20,6 +20,7 @@ export default function MarketingFooter() {
           <div>
             <h4>Product</h4>
             <Link href="/#features">Features</Link>
+            <Link href="/tech">Technology</Link>
             <Link href="/pricing">Pricing</Link>
             <Link href="/app">Workspace</Link>
           </div>
